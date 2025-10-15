@@ -2,19 +2,17 @@ import sqlite3
 import time
 
 # Performance test that compares two approaches for counting trips per day_of_week:
-# 1) Let SQLite perform aggregation using GROUP BY (`sqlite_compare`).
-# 2) Fetch raw rows and aggregate in Python (`group_trips_by_key_compare`).
+# 1) aggregation using GROUP BY (`sqlite_compare`).
+# 2) Fetch raw records and aggregate in Python (`group_trips_by_key_compare`).
 
 def sqlite_compare():
-    # Open a connection and run a single SQL query that groups and counts
-    # trips by `day_of_week`. This delegates aggregation work to SQLite.
     with sqlite3.connect("train_data.db") as conn:
         no_of_trips_per_day_of_week = conn.execute("""
             SELECT day_of_week, COUNT(*) AS no_of_trips
             FROM trips
             GROUP BY day_of_week;
         """).fetchall()
-        # Returns a list of tuples: [(day_of_week, count), ...]
+        
         return no_of_trips_per_day_of_week
     
 
