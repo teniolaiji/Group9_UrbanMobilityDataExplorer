@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trips Explorer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+</head>
+<body>
+    <main class="container">
+        <header class="header">
+            <h1 class="title">Trips Explorer</h1>
+            <form class="filters" method="get" action="/">
+                <div class="field-row">
+                    <label class="label">Start pickup</label>
+                    <input class="input" type="datetime-local" name="start_pickup_time" value="{{ request.args.get('start_pickup_time','') }}">
+                    <label class="label">End pickup</label>
+                    <input class="input" type="datetime-local" name="end_pickup_time" value="{{ request.args.get('end_pickup_time','') }}">
+                </div>
+                <div class="field-row">
+                    <label class="label">Min distance (km)</label>
+                    <input class="input" type="number" step="0.01" name="min_distance" value="{{ request.args.get('min_distance','') }}">
+                    <label class="label">Max distance (km)</label>
+                    <input class="input" type="number" step="0.01" name="max_distance" value="{{ request.args.get('max_distance','') }}">
+                </div>
+                <div class="field-row">
+                    <label class="label">Min duration (s)</label>
+                    <input class="input" type="number" name="min_trip_duration" value="{{ request.args.get('min_trip_duration','') }}">
+                    <label class="label">Max duration (s)</label>
+                    <input class="input" type="number" name="max_trip_duration" value="{{ request.args.get('max_trip_duration','') }}">
+                </div>
+                <div class="controls">
+                    <button class="btn" type="submit">Filter</button>
+                    <a class="btn secondary" href="/">Reset</a>
+                    <a class="btn analytics" href="/analytics">Go to Analytics</a>
+                </div>
+            </form>
+        </header>
+
+        <section class="results">
+            <table class="trips-table">
+                <thead>
+                    <tr>
+                        <th>Trip ID</th>
+                        <th>Pickup</th>
+                        <th>Dropoff</th>
+                        <th>Passengers</th>
+                        <th>Distance (km)</th>
+                        <th>Duration (s)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trip in trips %}
+                    <tr>
+                        <td>{{ trip[1] }}</td>
+                        <td>{{ trip[3] }}</td>
+                        <td>{{ trip[4] }}</td>
+                        <td>{{ trip[5] }}</td>
+                        <td>{{ trip[13] }}</td>
+                        <td>{{ trip[11] }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="no-data">No trips found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Analytics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='analytics.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <main class="container">
+        <header class="header">
+            <h1 class="title">Analytics</h1>
+            <nav class="nav">
+                <a class="nav-link" href="/">Explorer</a>
+                <a class="nav-link active" href="/analytics">Analytics</a>
+            </nav>
+        </header>
+
+        <section class="cards">
+            <article class="card">
+                <h2 class="card-title">Trips by Day of Week</h2>
+                <canvas id="tripsByDayChart" class="chart-canvas"></canvas>
+                <table class="small-table inline-table">
+                    <thead><tr><th>Day</th><th>Trips</th></tr></thead>
+                    <tbody>
+                        {% for row in no_of_trips_per_day_of_week %}
+                        <tr><td>{{ row[0] }}</td><td>{{ row[1] }}</td></tr>
+                        {% else %}
+                        <tr><td colspan="2" class="no-data">No data</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </article>
+
+            <article class="card">
+                <h2 class="card-title">Passengers by Day of Week</h2>
+                <canvas id="passengersByDayChart" class="chart-canvas"></canvas>
+                <table class="small-table inline-table">
+                    <thead><tr><th>Day</th><th>Passengers</th></tr></thead>
+                    <tbody>
+                        {% for row in no_of_passengers_per_day_of_week %}
+                        <tr><td>{{ row[0] }}</td><td>{{ row[1] }}</td></tr>
+                        {% else %}
+                        <tr><td colspan="2" class="no-data">No data</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </article>
+
+            <article class="card">
+                <h2 class="card-title">Trips by Hour</h2>
+                <canvas id="tripsByHourChart" class="chart-canvas"></canvas>
+                <table class="small-table inline-table">
+                    <thead><tr><th>Hour</th><th>Trips</th></tr></thead>
+                    <tbody>
+                        {% for row in no_of_trips_per_time_of_day %}
+                        <tr><td>{{ row[0] }}</td><td>{{ row[1] }}</td></tr>
+                        {% else %}
+                        <tr><td colspan="2" class="no-data">No data</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </article>
+
+            <article class="card">
+                <h2 class="card-title">Passenger Distribution</h2>
+                <canvas id="passengerDistChart" class="chart-canvas"></canvas>
+                <table class="small-table inline-table">
+                    <thead><tr><th>Passengers</th><th>Trips</th></tr></thead>
+                    <tbody>
+                        {% for row in passenger_distribution %}
+                        <tr><td>{{ row[0] }}</td><td>{{ row[1] }}</td></tr>
+                        {% else %}
+                        <tr><td colspan="2" class="no-data">No data</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </article>
+
+            <article class="card full-width">
+                <h2 class="card-title">Passengers by Hour</h2>
+                <canvas id="passengersByHourChart" class="chart-canvas large"></canvas>
+                <table class="wide-table inline-table">
+                    <thead><tr><th>Hour</th><th>Total Passengers</th></tr></thead>
+                    <tbody>
+                        {% for row in no_of_passengers_per_time_of_day %}
+                        <tr><td>{{ row[0] }}</td><td>{{ row[1] }}</td></tr>
+                        {% else %}
+                        <tr><td colspan="2" class="no-data">No data</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </article>
+        </section>
+    </main>
+
+    <script>
+    const tripsByDayRaw = {{ no_of_trips_per_day_of_week | tojson }};
+    const passengersByDayRaw = {{ no_of_passengers_per_day_of_week | tojson }};
+    const tripsByHourRaw = {{ no_of_trips_per_time_of_day | tojson }};
+    const passengerDistRaw = {{ passenger_distribution | tojson }};
+    const passengersByHourRaw = {{ no_of_passengers_per_time_of_day | tojson }};
+
+    function pairsToLabelsData(pairs) {
+        const labels = pairs.map(p => p[0]);
+        const data = pairs.map(p => Number(p[1]));
+        return {labels, data};
+    }
+
+    const dayTrips = pairsToLabelsData(tripsByDayRaw);
+    const dayPassengers = pairsToLabelsData(passengersByDayRaw);
+    const hourTrips = pairsToLabelsData(tripsByHourRaw);
+    const hourPassengers = pairsToLabelsData(passengersByHourRaw);
+
+    const passengerDistLabels = passengerDistRaw.map(p => String(p[0]));
+    const passengerDistData = passengerDistRaw.map(p => Number(p[1]));
+
+    function buildBarChart(ctx, labels, data, labelText) {
+        return new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: labelText,
+                    data,
+                    backgroundColor: labels.map(() => 'rgba(43,111,191,0.85)')
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,   
+                aspectRatio: 2,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+
+    function buildLineChart(ctx, labels, data, labelText) {
+        return new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: labelText,
+                    data,
+                    fill: false,
+                    borderColor: 'rgba(43,111,191,0.9)',
+                    tension: 0.2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+
+    function buildPieChart(ctx, labels, data) {
+        return new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels,
+                datasets: [{
+                    data,
+                    backgroundColor: ['#2b6fbf', '#4da6ff', '#ffa64d', '#ff6f61', '#9ad36b', '#c48bff']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 1.5
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx1 = document.getElementById('tripsByDayChart').getContext('2d');
+        buildBarChart(ctx1, dayTrips.labels, dayTrips.data, 'Trips');
+
+        const ctx2 = document.getElementById('passengersByDayChart').getContext('2d');
+        buildBarChart(ctx2, dayPassengers.labels, dayPassengers.data, 'Passengers');
+
+        const ctx3 = document.getElementById('tripsByHourChart').getContext('2d');
+        buildLineChart(ctx3, hourTrips.labels, hourTrips.data, 'Trips per hour');
+
+        const ctx4 = document.getElementById('passengerDistChart').getContext('2d');
+        buildPieChart(ctx4, passengerDistLabels, passengerDistData);
+
+        const ctx5 = document.getElementById('passengersByHourChart').getContext('2d');
+        buildBarChart(ctx5, hourPassengers.labels, hourPassengers.data, 'Passengers per hour');
+    });
+
+    </script>
+</body>
+</html>

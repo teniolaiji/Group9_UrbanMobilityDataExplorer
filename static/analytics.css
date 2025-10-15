@@ -1,0 +1,135 @@
+:root {
+    --bg: #fafafa;
+    --card: #ffffff;
+    --muted: #666;
+    --accent: #2b6fbf;
+    --border: #e0e0e0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: #222;
+    font-size: 14px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 10px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.title {
+    font-size: 18px;
+    color: var(--accent);
+    margin: 0;
+}
+
+.nav {
+    display: flex;
+    gap: 6px;
+}
+
+.nav-link {
+    padding: 5px 8px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+    color: var(--accent);
+    border: 1px solid transparent;
+}
+
+.nav-link.active {
+    background: var(--accent);
+    color: white;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 10px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.card.full-width {
+    grid-column: 1 / -1;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.small-table,
+.wide-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.small-table th,
+.small-table td,
+.wide-table th,
+.wide-table td {
+    padding: 5px 6px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.small-table th,
+.wide-table th {
+    text-align: left;
+    color: var(--muted);
+}
+
+.no-data {
+    text-align: center;
+    color: var(--muted);
+    padding: 6px;
+}
+
+.inline-table {
+    max-height: 90px;
+    overflow-y: auto;
+}
+
+.chart-canvas {
+    width: 100%;
+    height: 120px;
+}
+
+.chart-canvas.large {
+    height: 180px;
+}
+
+@media (max-width: 700px) {
+    .container {
+        padding: 8px;
+    }
+    .cards {
+        grid-template-columns: 1fr;
+    }
+}
