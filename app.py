@@ -7,6 +7,8 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     print(request.args)
+    
+    DEFAULT_LIMIT = 200
 
     query = "SELECT * FROM trips"
     query_second_part = []
@@ -35,7 +37,7 @@ def home():
     with sqlite3.connect("train_data.db") as conn:
         if query_second_part:
             query_second_part = " AND ".join(query_second_part)
-            query += f" WHERE {query_second_part};"
+            query += f" WHERE {query_second_part} LIMIT {DEFAULT_LIMIT};"
         trips = conn.execute(f"{query}", parameters).fetchall()
 
     return render_template("home.html", trips=trips)
@@ -54,6 +56,18 @@ def group_trips_by_key(records):
         if not found:
             grouped.append([key, 1])
     return grouped
+
+
+# Route to get trip by id
+@app.route('/trip/<trip_id>')
+def get_trip(trip_id):
+    with sqlite3.connect("train_data.db") as conn:
+        trip = conn.execute("""
+            SELECT * FROM trips WHERE trip_id = ?;
+        """, (trip_id,)).fetchone()
+    
+    # TODO: Someone to create the trip.html template    
+    return render_template("trip.html", trip=trip)
 
 
 @app.route('/analytics')
