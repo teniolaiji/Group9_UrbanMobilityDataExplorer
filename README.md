@@ -1,5 +1,5 @@
 # How to Set Up Our Project
-0. Download train.csv dataset from https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data?select=train.zip
+0. Download train.csv dataset from https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data?select=train.zip and place in root directory
 1. Create a virtual environment using the command python -m venv .venv (for Windows) or python3 -m venv .venv (for Linux and Mac).
 2. Activate the virtual environment using the command .venv\Scripts\activate (for windows) or source .venv/bin/activate (for Linux and Mac)
 3. Install the dependencies using the command pip install -r requirements.txt
@@ -31,3 +31,4 @@ urban_mobility_project/
 - Web-based dashboard for exploring urban mobility patterns
 - Interactive analytics and visualizations
 - Trip filtering and analysis capabilities
+
