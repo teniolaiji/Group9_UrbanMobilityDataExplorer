@@ -12,7 +12,7 @@ Flask is used for the backend while HTML, CSS and JS are used for the frontend.
 There are two main scripts the project uses in the backend: clean.py and app.py. 
 clean.py parses and cleans the data and stores the cleaned data in the SQLITE db
 app.py contains the Flask code that runs the server to fetch from the db and display on the frontend.
-The backend renders 2 frontend templates, home.html (for displaying the taxi duration data and for performing filtering operations such as getting all trips between a time range, or trips that lasted for a duration range, etc) while analytics.html tackles grouping the data by certain criteria such as number of trips per day of week or passenger distribution. This analytics.html visualizes the data using chart.js in the form of pie charts and bar graphs. 
+The backend renders 2 frontend templates, home.html (for displaying the taxi duration data and for performing filtering operations such as getting all trips between a time range, or trips that lasted for a duration range, etc) while analytics.html tackles grouping the data by certain criteria such as number of trips per day of week. This analytics.html visualizes the data using chart.js in the form of pie charts and bar graphs.
 
 
 
